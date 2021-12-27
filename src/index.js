@@ -1,17 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import studentStore from "./reduxStore/studentStore";
+import {Provider} from "react-redux";
+import reducerStudent from "./reducers/reducerStudent";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {getStudents} from "./API/studentService/actions";
+import {BrowserRouter} from "react-router-dom";
+import AppNavBar from "./components/AppNavBar";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+const store = studentStore(reducerStudent);
+const template = (
+        <Provider store={store}>
+            <BrowserRouter>
+                <AppNavBar/>
+                <App />
+            </BrowserRouter>
+        </Provider>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+store.dispatch(getStudents(10,1)).then(() => {
+    ReactDOM.render(template, document.getElementById('root'));
+});
+
+export default store
+
